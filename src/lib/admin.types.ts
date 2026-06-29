@@ -342,6 +342,18 @@ export interface AdminConfig {
       from: string; // 发件人邮箱
     };
   };
+  TelegramConfig?: {
+    enabled: boolean; // 是否启用 Telegram Bot
+    botToken?: string; // Bot Token，仅服务端使用
+    botUsername?: string; // Bot 用户名，用于前端跳转
+    webhookSecret?: string; // Webhook Secret Token
+    apiProxy?: string; // Telegram Bot API 系统代理（HTTP/HTTPS proxy）
+    apiBaseUrl?: string; // Telegram Bot API 反代 Base URL
+    loginEnabled?: boolean; // 是否启用 Telegram 登录
+    bindingEnabled?: boolean; // 是否启用用户绑定
+    notificationsEnabled?: boolean; // 是否启用 Telegram 通知
+    defaultNotifications?: boolean; // 新绑定用户默认开启通知
+  };
   MusicConfig?: {
     Enabled?: boolean; // 启用音乐功能
     BaseUrl?: string; // lxserver 地址

@@ -99,6 +99,8 @@ export default async function RootLayout({
   let enableOIDCLogin = false;
   let enableOIDCRegistration = false;
   let oidcButtonText = '';
+  let telegramLoginEnabled = false;
+  let telegramBotUsername = '';
   let aiEnabled = false;
   let aiEnableHomepageEntry = false;
   let aiEnableVideoCardEntry = false;
@@ -173,6 +175,13 @@ export default async function RootLayout({
     enableOIDCLogin = config.SiteConfig.EnableOIDCLogin || false;
     enableOIDCRegistration = config.SiteConfig.EnableOIDCRegistration || false;
     oidcButtonText = config.SiteConfig.OIDCButtonText || '';
+    telegramLoginEnabled = Boolean(
+      config.TelegramConfig?.enabled &&
+      config.TelegramConfig?.loginEnabled &&
+      (config.TelegramConfig?.botToken || process.env.TELEGRAM_BOT_TOKEN) &&
+      (config.TelegramConfig?.botUsername || process.env.TELEGRAM_BOT_USERNAME)
+    );
+    telegramBotUsername = config.TelegramConfig?.botUsername || process.env.TELEGRAM_BOT_USERNAME || '';
     // AI配置
     aiEnabled = config.AIConfig?.Enabled || false;
     aiEnableHomepageEntry = config.AIConfig?.EnableHomepageEntry || false;
@@ -275,6 +284,8 @@ export default async function RootLayout({
     ENABLE_OIDC_LOGIN: enableOIDCLogin,
     ENABLE_OIDC_REGISTRATION: enableOIDCRegistration,
     OIDC_BUTTON_TEXT: oidcButtonText,
+    ENABLE_TELEGRAM_LOGIN: telegramLoginEnabled,
+    TELEGRAM_BOT_USERNAME: telegramBotUsername,
     AI_ENABLED: aiEnabled && userFeatureAccess.ai_ask,
     AI_ENABLE_HOMEPAGE_ENTRY: aiEnableHomepageEntry,
     AI_ENABLE_VIDEOCARD_ENTRY: aiEnableVideoCardEntry,

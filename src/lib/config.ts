@@ -331,6 +331,18 @@ async function getInitConfig(
     SourceConfig: [],
     CustomCategories: [],
     LiveConfig: [],
+    TelegramConfig: {
+      enabled: process.env.TELEGRAM_BOT_ENABLED === 'true' || Boolean(process.env.TELEGRAM_BOT_TOKEN),
+      botToken: process.env.TELEGRAM_BOT_TOKEN || '',
+      botUsername: process.env.TELEGRAM_BOT_USERNAME || '',
+      webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET || '',
+      apiProxy: process.env.TELEGRAM_API_PROXY || '',
+      apiBaseUrl: process.env.TELEGRAM_API_BASE_URL || '',
+      loginEnabled: process.env.TELEGRAM_LOGIN_ENABLED !== 'false',
+      bindingEnabled: process.env.TELEGRAM_BINDING_ENABLED !== 'false',
+      notificationsEnabled: process.env.TELEGRAM_NOTIFICATIONS_ENABLED !== 'false',
+      defaultNotifications: process.env.TELEGRAM_DEFAULT_NOTIFICATIONS !== 'false',
+    },
     SpecialSourceApis: Array.isArray(cfgFile.special_source_apis)
       ? cfgFile.special_source_apis
       : Array.isArray(cfgFile.specialSourceApis)
@@ -565,6 +577,20 @@ export function configSelfCheck(adminConfig: AdminConfig): AdminConfig {
   }
   if (adminConfig.SiteConfig.DefaultUserTags === undefined) {
     adminConfig.SiteConfig.DefaultUserTags = [];
+  }
+  if (!adminConfig.TelegramConfig) {
+    adminConfig.TelegramConfig = {
+      enabled: process.env.TELEGRAM_BOT_ENABLED === 'true' || Boolean(process.env.TELEGRAM_BOT_TOKEN),
+      botToken: process.env.TELEGRAM_BOT_TOKEN || '',
+      botUsername: process.env.TELEGRAM_BOT_USERNAME || '',
+      webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET || '',
+      apiProxy: process.env.TELEGRAM_API_PROXY || '',
+      apiBaseUrl: process.env.TELEGRAM_API_BASE_URL || '',
+      loginEnabled: process.env.TELEGRAM_LOGIN_ENABLED !== 'false',
+      bindingEnabled: process.env.TELEGRAM_BINDING_ENABLED !== 'false',
+      notificationsEnabled: process.env.TELEGRAM_NOTIFICATIONS_ENABLED !== 'false',
+      defaultNotifications: process.env.TELEGRAM_DEFAULT_NOTIFICATIONS !== 'false',
+    };
   }
   if (adminConfig.SiteConfig.PansouKeywordBlocklist === undefined) {
     adminConfig.SiteConfig.PansouKeywordBlocklist = '';

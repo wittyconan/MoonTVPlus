@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, Info, Mail, MonitorSmartphone, X } from 'lucide-react';
+import { Bell, Info, Mail, MonitorSmartphone, Send, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 interface EmailSettingsPanelProps {
@@ -16,6 +16,13 @@ interface EmailSettingsPanelProps {
   pushNotificationsSupported: boolean;
   pushNotificationsConfigured: boolean;
   pushNotificationsBusy: boolean;
+  telegramEnabled?: boolean;
+  telegramBound?: boolean;
+  telegramUsername?: string;
+  telegramBindCode?: string;
+  telegramDeepLink?: string;
+  telegramBindingBusy?: boolean;
+  onCreateTelegramBindCode?: () => void;
   emailSettingsLoading: boolean;
   emailSettingsSaving: boolean;
   onSave: () => void;
@@ -74,6 +81,13 @@ export function EmailSettingsPanel({
   pushNotificationsSupported,
   pushNotificationsConfigured,
   pushNotificationsBusy,
+  telegramEnabled,
+  telegramBound,
+  telegramUsername,
+  telegramBindCode,
+  telegramDeepLink,
+  telegramBindingBusy,
+  onCreateTelegramBindCode,
   emailSettingsLoading,
   emailSettingsSaving,
   onSave,
@@ -113,7 +127,7 @@ export function EmailSettingsPanel({
                 通知设置
               </h3>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                管理邮件通知和当前设备浏览器系统通知。
+                管理邮件通知、浏览器系统通知和 Telegram Bot 通知。
               </p>
             </div>
             <button
@@ -228,6 +242,59 @@ export function EmailSettingsPanel({
                 </div>
               </section>
 
+              {telegramEnabled && (
+                <section className='rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800'>
+                  <div className='mb-4 flex items-start gap-3'>
+                    <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300'>
+                      <Send className='h-5 w-5' />
+                    </div>
+                    <div className='min-w-0 flex-1'>
+                      <h4 className='text-base font-semibold text-gray-900 dark:text-gray-100'>Telegram Bot 通知</h4>
+                      <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
+                        绑定 Telegram 后可接收站内通知，也可在登录页使用 Telegram 确认登录。
+                      </p>
+                    </div>
+                  </div>
+                  <div className='space-y-3 rounded-xl bg-white p-3 dark:bg-gray-900/70'>
+                    <div className='flex items-center justify-between gap-3 text-sm'>
+                      <span className='text-gray-600 dark:text-gray-400'>绑定状态</span>
+                      <span className={`font-medium ${telegramBound ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                        {telegramBound ? `已绑定${telegramUsername ? ` @${telegramUsername}` : ''}` : '未绑定'}
+                      </span>
+                    </div>
+                    {!telegramBound && (
+                      <>
+                        {telegramBindCode && (
+                          <div className='rounded-lg bg-sky-50 p-3 text-sm text-sky-800 dark:bg-sky-900/30 dark:text-sky-200'>
+                            绑定码：<span className='font-mono text-base font-bold'>{telegramBindCode}</span>
+                            <p className='mt-1 text-xs'>在 Bot 中发送 /bind {telegramBindCode}，或点击下方按钮打开 Telegram。</p>
+                          </div>
+                        )}
+                        <div className='flex gap-2'>
+                          <button
+                            type='button'
+                            onClick={onCreateTelegramBindCode}
+                            disabled={telegramBindingBusy}
+                            className='flex-1 rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-sky-400'
+                          >
+                            {telegramBindingBusy ? '生成中...' : '生成绑定码'}
+                          </button>
+                          {telegramDeepLink && (
+                            <button
+                              type='button'
+                              onClick={() => window.open(telegramDeepLink, '_blank', 'noopener,noreferrer')}
+                              className='flex-1 rounded-lg border border-sky-300 px-3 py-2 text-sm font-medium text-sky-700 transition-colors hover:bg-sky-50 dark:border-sky-700 dark:text-sky-300 dark:hover:bg-sky-900/30'
+                            >
+                              打开 Telegram
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </section>
+              )}
+
               <button
                 onClick={onSave}
                 disabled={emailSettingsSaving}
@@ -261,7 +328,7 @@ export function EmailSettingsPanel({
           <div className='mt-6 flex gap-2 rounded-xl border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20'>
             <Info className='mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-300' />
             <p className='text-xs leading-5 text-blue-800 dark:text-blue-200'>
-              邮件通知需要管理员配置邮件服务；当前设备浏览器系统通知需要当前浏览器授权通知权限。
+              邮件通知需要管理员配置邮件服务；浏览器系统通知需要当前浏览器授权。
             </p>
           </div>
         </div>
